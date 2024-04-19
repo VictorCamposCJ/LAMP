@@ -1,0 +1,30 @@
+---
+- name: Configurar SSH para el cliente master
+  hosts: master
+  become: yes
+  tasks:
+    - name: Generar par de claves SSH
+      command: ssh-keygen -b 2048 -t rsa -f /home/{{ vagrant }}/.ssh/id_rsa -q -N ""
+      args:
+        creates: /home/{{ vagrant }}/.ssh/id_rsa
+      become: yes
+      become_user: "{{ vagrant }}"
+
+- name: Copiar la clave pública SSH a los clientes
+  hosts: clients
+  tasks:
+    - name: Crear el directorio .ssh en el home del usuario si no existe
+      file:
+        path: /home/{{ vagrant }}/.ssh
+        state: directory
+        mode: '700'
+      become: yes
+      become_user: "{{ vagrant }}"
+
+    - name: Copiar la clave pública SSH al cliente
+      authorized_key:
+        user: "{{ vagrant }}"
+        state: present
+        key: "{{ lookup('file', '/home/{{ vagrant }}/.ssh/id_rsa.pub') }}"
+      become: yes
+      become_user: "{{ vagrant }}"

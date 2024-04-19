@@ -1,0 +1,6 @@
+---
+- name: instalar apache y desabilitar selinux
+  hosts: apache
+  become: yes
+  roles:
+          - ins-apache-selinux

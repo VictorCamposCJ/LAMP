@@ -1,0 +1,18 @@
+---
+- name: instalar apache y desabilitar selinux
+  hosts: apache
+  become: yes
+  roles:
+          - ins-apache-selinux
+
+- name: instalar wordpress, php8 y configurar proxy de apache
+  hosts: apache
+  become: yes
+  roles:
+          - ins-wordpress-php8-conf-apache
+
+- name: instalar mariadb
+  hosts: mariadb
+  become: yes
+  roles:
+          - mariadb

@@ -1,0 +1,28 @@
+---
+# tasks file for backup
+
+#     <--------------- CREACIÓN DEL FICHERO BACKUP EN CASO DE QUE NO EXISTA -------------->
+
+- name: Crear directorio backup
+  become: true
+  file:
+          path: /backup
+          state: directory
+
+#       <----------- COPIA DEL ÚLTIMO BACKUP DEL CONTROL NODE AL SERVIDOR REMOTO ----------->
+
+- name: Copiar backup a servidor remoto Debian
+  template:
+          src: /etc/ansible/recursos/backup-file.sql
+          dest: /backup/
+  when: ansible_facts.distribution == "Debian"
+
+#       <----------------------- RESTAURACIÓN DE LA BASE DE DATOS ---------------------->
+
+- name: Restaurar base de datos
+  mysql_db:
+          login_user: root
+          login_password: Viewnext
+          name: maria
+          state: import
+          target: /backup/backup-file.sql

@@ -1,0 +1,6 @@
+---
+- name: Restaurar backup
+  hosts: mariadb
+  become: yes
+  roles:
+          - backup
